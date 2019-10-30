@@ -19,7 +19,7 @@ require (
 	github.com/containerd/continuity v0.0.0-20171215195539-b2b946a77f59 // indirect
 	github.com/coreos/bbolt v1.3.3 // indirect
 	github.com/coreos/etcd v3.3.10+incompatible
-	github.com/coreos/go-iptables v0.4.0
+	github.com/coreos/go-iptables v0.4.3
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd v0.0.0-20180511133405-39ca1b05acc7 // indirect
 	github.com/coreos/pkg v0.0.0-20180108230652-97fdf19511ea // indirect
