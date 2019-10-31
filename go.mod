@@ -82,7 +82,7 @@ require (
 	github.com/satori/go.uuid v0.0.0-20181028125025-b2ce2384e17b // indirect
 	github.com/sirupsen/logrus v1.0.6
 	github.com/soheilhy/cmux v0.1.4 // indirect
-	github.com/spf13/cobra v0.0.3
+	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.2
 	github.com/tinylib/msgp v1.0.2 // indirect
 	github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5 // indirect
