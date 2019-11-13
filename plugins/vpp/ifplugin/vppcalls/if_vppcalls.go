@@ -129,6 +129,10 @@ type InterfaceVppAPI interface {
 	AddTapInterface(ifName string, tapIf *interfaces.TapLink) (swIfIdx uint32, err error)
 	// DeleteTapInterface calls TapDelete bin API.
 	DeleteTapInterface(ifName string, idx uint32, version uint32) error
+	// AddVhostUserInterface calls CreateVhostUserIf bin API
+	AddVhostUserInterface(ifName string, vhstUsrIface *interfaces.VhostUserLink) (swIfIdx uint32, err error)
+	// DeleteVhostUserInterface calls DeleteVhostUserIf bin API.
+	DeleteVhostUserInterface(ifName string, idx uint32) error
 	// AddVxLanTunnel calls AddDelVxLanTunnelReq with flag add=1.
 	AddVxLanTunnel(ifName string, vrf, multicastIf uint32, vxLan *interfaces.VxlanLink) (swIndex uint32, err error)
 	// DeleteVxLanTunnel calls AddDelVxLanTunnelReq with flag add=0.

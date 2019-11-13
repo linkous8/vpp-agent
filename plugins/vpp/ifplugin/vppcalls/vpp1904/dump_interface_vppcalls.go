@@ -31,6 +31,7 @@ import (
 	"github.com/ligato/vpp-agent/plugins/vpp/binapi/vpp1904/ipsec"
 	"github.com/ligato/vpp-agent/plugins/vpp/binapi/vpp1904/memif"
 	"github.com/ligato/vpp-agent/plugins/vpp/binapi/vpp1904/tapv2"
+	"github.com/ligato/vpp-agent/plugins/vpp/binapi/vpp1904/vhost_user"
 	"github.com/ligato/vpp-agent/plugins/vpp/binapi/vpp1904/vmxnet3"
 	"github.com/ligato/vpp-agent/plugins/vpp/binapi/vpp1904/vxlan"
 	"github.com/ligato/vpp-agent/plugins/vpp/binapi/vpp1904/vxlan_gpe"
@@ -227,6 +228,11 @@ func (h *InterfaceVppHandler) DumpInterfaces() (map[uint32]*vppcalls.InterfaceDe
 	}
 
 	err = h.dumpMemifDetails(ifs)
+	if err != nil {
+		return nil, err
+	}
+
+	err = h.dumpVhostUserDetails(ifs)
 	if err != nil {
 		return nil, err
 	}
@@ -553,6 +559,37 @@ func (h *InterfaceVppHandler) dumpMemifDetails(ifs map[uint32]*vppcalls.Interfac
 			},
 		}
 		ifs[memifDetails.SwIfIndex].Interface.Type = interfaces.Interface_MEMIF
+	}
+
+	return nil
+}
+
+// dumpVhostUserDetails dumps vhost_user interface details from VPP and fills them into the provided interface map.
+func (h *InterfaceVppHandler) dumpVhostUserDetails(ifs map[uint32]*vppcalls.InterfaceDetails) error {
+	reqCtx := h.callsChannel.SendMultiRequest(&vhost_user.SwInterfaceVhostUserDump{})
+	for {
+		vhstUsrDetails := &vhost_user.SwInterfaceVhostUserDetails{}
+		stop, err := reqCtx.ReceiveReply(vhstUsrDetails)
+		if stop {
+			break // Break from the loop.
+		}
+		if err != nil {
+			return fmt.Errorf("failed to dump memif interface: %v", err)
+		}
+		_, ifIdxExists := ifs[vhstUsrDetails.SwIfIndex]
+		if !ifIdxExists {
+			continue
+		}
+		ifs[vhstUsrDetails.SwIfIndex].Interface.Link = &interfaces.Interface_VhostUser{
+			VhostUser: &interfaces.VhostUserLink{
+				IsServer:     vhstUsrDetails.IsServer == 1,
+				SockFilename: string(vhstUsrDetails.SockFilename),
+				// TODO: DisableMrgRxbuf, DisableIndirectDesc - not available in the binary API
+				//DisableMrgRxbuf:
+				//DisableIndirectDesc:
+			},
+		}
+		ifs[vhstUsrDetails.SwIfIndex].Interface.Type = interfaces.Interface_VHOST_USER
 	}
 
 	return nil
@@ -988,6 +1025,9 @@ func guessInterfaceType(ifName string) interfaces.Interface_Type {
 
 	case strings.HasPrefix(ifName, "memif"):
 		return interfaces.Interface_MEMIF
+
+	case strings.HasPrefix(ifName, "vhost_user"):
+		return interfaces.Interface_VHOST_USER
 
 	case strings.HasPrefix(ifName, "tap"):
 		return interfaces.Interface_TAP

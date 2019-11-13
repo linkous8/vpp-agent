@@ -30,6 +30,7 @@ import (
 	"github.com/ligato/vpp-agent/plugins/vpp/binapi/vpp1904/l2"
 	"github.com/ligato/vpp-agent/plugins/vpp/binapi/vpp1904/memif"
 	"github.com/ligato/vpp-agent/plugins/vpp/binapi/vpp1904/tapv2"
+	"github.com/ligato/vpp-agent/plugins/vpp/binapi/vpp1904/vhost_user"
 	"github.com/ligato/vpp-agent/plugins/vpp/binapi/vpp1904/vmxnet3"
 	"github.com/ligato/vpp-agent/plugins/vpp/binapi/vpp1904/vxlan"
 	"github.com/ligato/vpp-agent/plugins/vpp/ifplugin/vppcalls"
@@ -46,6 +47,7 @@ func init() {
 	msgs = append(msgs, l2.AllMessages()...)
 	msgs = append(msgs, memif.AllMessages()...)
 	msgs = append(msgs, tapv2.AllMessages()...)
+	msgs = append(msgs, vhost_user.AllMessages()...)
 	msgs = append(msgs, vmxnet3.AllMessages()...)
 	msgs = append(msgs, vxlan.AllMessages()...)
 

@@ -37,4 +37,5 @@ package vpp1904
 //go:generate binapigen --input-file=/usr/share/vpp/api/plugins/memif.api.json
 //go:generate binapigen --input-file=/usr/share/vpp/api/plugins/nat.api.json
 //go:generate binapigen --input-file=/usr/share/vpp/api/plugins/stn.api.json
+//go:generate binapigen --input-file=/usr/share/vpp/api/core/vhost_user.api.json
 //go:generate binapigen --input-file=/usr/share/vpp/api/plugins/vmxnet3.api.json

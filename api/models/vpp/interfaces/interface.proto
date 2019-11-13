@@ -23,6 +23,7 @@ message Interface {
         VMXNET3_INTERFACE = 9;
         BOND_INTERFACE = 10;
         GRE_TUNNEL = 11;
+        VHOST_USER = 12;
     };
 
     // Name is mandatory field representing logical name for the interface.
@@ -101,6 +102,7 @@ message Interface {
         VmxNet3Link vmx_net3 = 106;
         BondLink bond = 107;
         GreLink gre = 108;
+        VhostUserLink vhost_user = 109;
     };
 };
 
@@ -153,6 +155,18 @@ message MemifLink {
     uint32 rx_queues = 8;
     // Number of tx queues (only valid for slave)
     uint32 tx_queues = 9;
+}
+
+// VhostUserLink defines configuration for interface type: VHOST_USER
+message VhostUserLink {
+    // our side is socket server
+    bool is_server = 1;
+    // unix socket filename, used to speak with frontend
+    string sock_filename = 2;
+    // disable the use of merge receive buffers
+    bool disable_mrg_rxbuf = 3;
+    // disable the use of indirect descriptors which driver can use
+    bool disable_indirect_desc = 4;
 }
 
 // VxlanLink defines configuration for interface type: VXLAN_TUNNEL

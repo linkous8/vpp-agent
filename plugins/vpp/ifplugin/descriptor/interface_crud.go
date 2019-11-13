@@ -62,6 +62,13 @@ func (d *InterfaceDescriptor) Create(key string, intf *interfaces.Interface) (me
 			return nil, err
 		}
 
+	case interfaces.Interface_VHOST_USER:
+		ifIdx, err = d.ifHandler.AddVhostUserInterface(intf.Name, intf.GetVhostUser())
+		if err != nil {
+			d.log.Error(err)
+			return nil, err
+		}
+
 	case interfaces.Interface_VXLAN_TUNNEL:
 		var multicastIfIdx uint32
 		multicastIf := intf.GetVxlan().GetMulticast()
@@ -232,6 +239,8 @@ func (d *InterfaceDescriptor) Delete(key string, intf *interfaces.Interface, met
 		err = d.ifHandler.DeleteTapInterface(intf.Name, ifIdx, intf.GetTap().GetVersion())
 	case interfaces.Interface_MEMIF:
 		err = d.ifHandler.DeleteMemifInterface(intf.Name, ifIdx)
+	case interfaces.Interface_VHOST_USER:
+		err = d.ifHandler.DeleteVhostUserInterface(intf.Name, ifIdx)
 	case interfaces.Interface_VXLAN_TUNNEL:
 		if intf.GetVxlan().Gpe == nil {
 			err = d.ifHandler.DeleteVxLanTunnel(intf.Name, ifIdx, intf.Vrf, intf.GetVxlan())
@@ -438,6 +447,10 @@ func (d *InterfaceDescriptor) Retrieve(correlate []adapter.InterfaceKVWithMetada
 				if intf.Interface.GetMemif().GetBufferSize() == 0 {
 					intf.Interface.GetMemif().BufferSize = expCfg.GetMemif().GetBufferSize()
 				}
+			}
+			if expCfg.Type == interfaces.Interface_VHOST_USER && intf.Interface.GetVhostUser() != nil {
+				intf.Interface.GetVhostUser().DisableMrgRxbuf = expCfg.GetVhostUser().GetDisableMrgRxbuf()
+				intf.Interface.GetVhostUser().DisableIndirectDesc = expCfg.GetVhostUser().GetDisableIndirectDesc()
 			}
 
 			// remove rx-placement entries for queues with configuration not defined by NB
